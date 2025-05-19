@@ -18,8 +18,17 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile, updateUserProfile } from '../lib/db';
+import { AuthProvider } from '../context/AuthContext';
 
-export default function ProfilePage() {
+export default function ProfilePageWrapper() {
+  return (
+    <AuthProvider>
+      <ProfilePage />
+    </AuthProvider>
+  );
+}
+
+function ProfilePage() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
