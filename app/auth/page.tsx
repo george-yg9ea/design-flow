@@ -9,13 +9,12 @@ import {
   Heading,
   Input,
   Stack,
-  Text,
-  useToast,
   VStack,
   useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 export default function AuthPage() {
@@ -23,13 +22,24 @@ export default function AuthPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  const { signIn, signUp, user } = useAuth();
   const router = useRouter();
   const toast = useToast();
 
   const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.700');
+  const borderColor = useColorModeValue('gray.200', 'gray.600');
   const textColor = useColorModeValue('gray.700', 'gray.100');
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && user) {
+      router.push('/');
+    }
+  }, [mounted, user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +50,7 @@ export default function AuthPage() {
         await signUp(email, password);
         toast({
           title: 'Account created.',
-          description: 'Please check your email for verification.',
+          description: 'Please check your email to verify your account.',
           status: 'success',
           duration: 5000,
           isClosable: true,
@@ -61,6 +71,10 @@ export default function AuthPage() {
       setLoading(false);
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <Container maxW="container.sm" py={12}>
@@ -119,16 +133,13 @@ export default function AuthPage() {
               </Stack>
             </form>
 
-            <Text color={textColor}>
-              {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-              <Button
-                variant="link"
-                color={textColor}
-                onClick={() => setIsSignUp(!isSignUp)}
-              >
-                {isSignUp ? 'Sign In' : 'Sign Up'}
-              </Button>
-            </Text>
+            <Button
+              variant="ghost"
+              onClick={() => setIsSignUp(!isSignUp)}
+              color={textColor}
+            >
+              {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
+            </Button>
           </VStack>
         </Box>
       </VStack>
