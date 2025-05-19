@@ -66,6 +66,7 @@ export default function Navbar() {
                 />
               </MenuButton>
               <MenuList>
+                <MenuItem onClick={() => router.push('/profile')}>Profile</MenuItem>
                 <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
               </MenuList>
             </Menu>

@@ -37,20 +37,22 @@ import {
   FormLabel,
   Input,
   useToast,
+  DrawerFooter,
 } from '@chakra-ui/react';
 import { AddIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { 
-  ProjectDeliverableDocument, 
-  getProjectDeliverableDocuments,
-  addProjectDeliverableDocument,
-  updateProjectDeliverableDocument,
-  deleteProjectDeliverableDocument
+  TaskDocument, 
+  getTaskDocuments,
+  addTaskDocument,
+  updateTaskDocument,
+  deleteTaskDocument
 } from '../lib/db';
+import DeliverableComments from './DeliverableComments';
 
-interface Document extends ProjectDeliverableDocument {}
+interface Document extends TaskDocument {}
 
 interface DeliverableDrawerProps {
   isOpen: boolean;
@@ -65,7 +67,7 @@ interface DeliverableDrawerProps {
     };
   } | null;
   phase: string;
-  projectDeliverableId: string;
+  taskId: string;
 }
 
 function DocumentModal({ 
@@ -179,7 +181,7 @@ export default function DeliverableDrawer({
   onClose,
   deliverable,
   phase,
-  projectDeliverableId,
+  taskId,
 }: DeliverableDrawerProps) {
   const borderColor = useColorModeValue('gray.200', 'gray.600');
   const accordionBg = useColorModeValue('gray.50', 'gray.700');
@@ -199,10 +201,10 @@ export default function DeliverableDrawer({
 
   useEffect(() => {
     async function loadDocuments() {
-      if (!projectDeliverableId) return;
+      if (!taskId) return;
       
       try {
-        const docs = await getProjectDeliverableDocuments(projectDeliverableId);
+        const docs = await getTaskDocuments(taskId);
         setDocuments(docs);
       } catch (error) {
         toast({
@@ -218,15 +220,15 @@ export default function DeliverableDrawer({
     if (isOpen) {
       loadDocuments();
     }
-  }, [isOpen, projectDeliverableId, toast]);
+  }, [isOpen, taskId, toast]);
 
   const handleAddDocument = async (doc: { title: string; url: string }) => {
     if (!user) return;
 
     setLoading(true);
     try {
-      const newDoc = await addProjectDeliverableDocument(
-        projectDeliverableId,
+      const newDoc = await addTaskDocument(
+        taskId,
         doc.title,
         doc.url,
         user.id
@@ -255,7 +257,7 @@ export default function DeliverableDrawer({
 
     setLoading(true);
     try {
-      const updatedDoc = await updateProjectDeliverableDocument(
+      const updatedDoc = await updateTaskDocument(
         editingDoc.id,
         doc.title,
         doc.url
@@ -285,7 +287,7 @@ export default function DeliverableDrawer({
   const handleDeleteDocument = async (id: string) => {
     setLoading(true);
     try {
-      await deleteProjectDeliverableDocument(id);
+      await deleteTaskDocument(id);
       setDocuments(documents.filter(d => d.id !== id));
       toast({
         title: 'Document deleted',
@@ -315,15 +317,19 @@ export default function DeliverableDrawer({
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader borderBottomWidth="1px">
+        <DrawerHeader>
           {deliverable?.name}
+          <Text fontSize="sm" color="gray.500" mt={1}>
+            {phase}
+          </Text>
         </DrawerHeader>
 
         <DrawerBody>
           <VStack spacing={6} align="stretch">
-            <Text whiteSpace="pre-wrap">
-              {deliverable?.description}
-            </Text>
+            <Box>
+              <Text fontWeight="medium" mb={2}>Description</Text>
+              <Text color="gray.600">{deliverable?.description}</Text>
+            </Box>
 
             <Accordion allowToggle>
               <AccordionItem border="1px" borderColor={borderColor} borderRadius="md">
@@ -434,8 +440,21 @@ export default function DeliverableDrawer({
                 ))}
               </VStack>
             </Box>
+
+            <Box>
+              <Text fontWeight="medium" mb={4}>Comments</Text>
+              {taskId && (
+                <DeliverableComments taskId={taskId} />
+              )}
+            </Box>
           </VStack>
         </DrawerBody>
+
+        <DrawerFooter>
+          <Button variant="outline" mr={3} onClick={onClose}>
+            Close
+          </Button>
+        </DrawerFooter>
       </DrawerContent>
 
       <DocumentModal

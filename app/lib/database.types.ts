@@ -35,12 +35,13 @@ export interface Database {
           created_by?: string | null
         }
       }
-      project_deliverables: {
+      tasks: {
         Row: {
           id: string
           project_id: string
           phase: string
           deliverable_id: string
+          status: 'todo' | 'in_progress' | 'done'
           created_at: string
           updated_at: string
           created_by: string | null
@@ -50,6 +51,7 @@ export interface Database {
           project_id: string
           phase: string
           deliverable_id: string
+          status?: 'todo' | 'in_progress' | 'done'
           created_at?: string
           updated_at?: string
           created_by?: string | null
@@ -59,15 +61,16 @@ export interface Database {
           project_id?: string
           phase?: string
           deliverable_id?: string
+          status?: 'todo' | 'in_progress' | 'done'
           created_at?: string
           updated_at?: string
           created_by?: string | null
         }
       }
-      project_deliverable_documents: {
+      task_documents: {
         Row: {
           id: string
-          project_deliverable_id: string
+          task_id: string
           title: string
           url: string
           created_at: string
@@ -76,7 +79,7 @@ export interface Database {
         }
         Insert: {
           id?: string
-          project_deliverable_id: string
+          task_id: string
           title: string
           url: string
           created_at?: string
@@ -85,12 +88,35 @@ export interface Database {
         }
         Update: {
           id?: string
-          project_deliverable_id?: string
+          task_id?: string
           title?: string
           url?: string
           created_at?: string
           updated_at?: string
           created_by?: string | null
+        }
+      }
+      task_comments: {
+        Row: {
+          id: string
+          task_id: string
+          user_id: string
+          content: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          task_id: string
+          user_id: string
+          content: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          task_id?: string
+          user_id?: string
+          content?: string
+          created_at?: string
         }
       }
     }
