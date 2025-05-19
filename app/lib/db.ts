@@ -282,7 +282,9 @@ export async function getTaskComments(taskId: string) {
     content: comment.content,
     created_at: comment.created_at,
     user_id: comment.user_id,
-    user_email: comment.user_profiles?.email || 'Unknown User'
+    user_email: Array.isArray(comment.user_profiles)
+      ? ((comment.user_profiles as { email: string }[])[0]?.email || 'Unknown User')
+      : ((comment.user_profiles as { email: string })?.email || 'Unknown User')
   }));
 }
 
@@ -355,9 +357,7 @@ interface ProjectUpdateResponse {
   created_at: string;
   user_id: string;
   mood: 'not_great' | 'okay' | 'good' | 'great';
-  user_profiles: {
-    email: string;
-  };
+  user_profiles: { email: string; name?: string } | { email: string; name?: string }[];
 }
 
 export async function getProjectUpdates(projectId: string) {
@@ -386,8 +386,12 @@ export async function getProjectUpdates(projectId: string) {
     created_at: update.created_at,
     user_id: update.user_id,
     mood: update.mood,
-    user_email: update.user_profiles?.email || 'Unknown User',
-    user_name: update.user_profiles?.name || update.user_profiles?.email || 'Unknown User'
+    user_email: Array.isArray(update.user_profiles)
+      ? ((update.user_profiles as { email: string; name?: string }[])[0]?.email || 'Unknown User')
+      : ((update.user_profiles as { email: string; name?: string })?.email || 'Unknown User'),
+    user_name: Array.isArray(update.user_profiles)
+      ? ((update.user_profiles as { email: string; name?: string }[])[0]?.name || (update.user_profiles as { email: string; name?: string }[])[0]?.email || 'Unknown User')
+      : ((update.user_profiles as { email: string; name?: string })?.name || (update.user_profiles as { email: string; name?: string })?.email || 'Unknown User')
   }));
 }
 
@@ -418,6 +422,7 @@ interface DeliverableComment {
   created_at: string;
   user_id: string;
   user_email: string;
+  user_profiles?: { email: string } | { email: string }[];
 }
 
 export async function getDeliverableComments(projectDeliverableId: string) {
@@ -443,7 +448,9 @@ export async function getDeliverableComments(projectDeliverableId: string) {
     content: comment.content,
     created_at: comment.created_at,
     user_id: comment.user_id,
-    user_email: comment.user_profiles?.email || 'Unknown User'
+    user_email: Array.isArray(comment.user_profiles)
+      ? ((comment.user_profiles as { email: string }[])[0]?.email || 'Unknown User')
+      : ((comment.user_profiles as { email: string })?.email || 'Unknown User')
   }));
 }
 
