@@ -10,6 +10,7 @@ import {
   MenuList,
   MenuItem,
   Button,
+  useTheme
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +18,8 @@ import { useAuth } from '../context/AuthContext';
 export default function Navbar() {
   const router = useRouter();
   const { user, signOut } = useAuth();
+  const theme = useTheme();
+  const primaryColor = theme.colors.blue[500];
   
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
@@ -59,7 +62,7 @@ export default function Navbar() {
                   size="sm" 
                   name={user.email || undefined}
                   cursor="pointer"
-                  bg={useColorModeValue('gray.200', 'gray.600')}
+                  bg={primaryColor}
                   _hover={{
                     opacity: 0.8,
                   }}
