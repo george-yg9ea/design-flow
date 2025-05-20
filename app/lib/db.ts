@@ -277,13 +277,13 @@ export async function getTaskComments(taskId: string) {
   if (error) throw error;
   if (!data) return [];
 
-  return data.map(comment => ({
+  return data.map((comment: any) => ({
     id: comment.id,
     content: comment.content,
     created_at: comment.created_at,
     user_id: comment.user_id,
     user_email: Array.isArray(comment.user_profiles)
-      ? ((comment.user_profiles[0] as any)?.email || 'Unknown User')
+      ? (comment.user_profiles[0]?.email || 'Unknown User')
       : (comment.user_profiles?.email || 'Unknown User')
   }));
 }
@@ -442,13 +442,13 @@ export async function getDeliverableComments(projectDeliverableId: string) {
   if (error) throw error;
   if (!data) return [];
 
-  return data.map(comment => ({
+  return data.map((comment: any) => ({
     id: comment.id,
     content: comment.content,
     created_at: comment.created_at,
     user_id: comment.user_id,
     user_email: Array.isArray(comment.user_profiles)
-      ? ((comment.user_profiles[0] as any)?.email || 'Unknown User')
+      ? (comment.user_profiles[0]?.email || 'Unknown User')
       : (comment.user_profiles?.email || 'Unknown User')
   }));
 }
