@@ -1,7 +1,5 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import {
   Box,
   Button,
@@ -18,17 +16,8 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile, updateUserProfile } from '../lib/db';
-import { AuthProvider } from '../context/AuthContext';
 
-export default function ProfilePageWrapper() {
-  return (
-    <AuthProvider>
-      <ProfilePage />
-    </AuthProvider>
-  );
-}
-
-function ProfilePage() {
+export default function ProfilePage() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
