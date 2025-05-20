@@ -53,6 +53,12 @@ export default function ProfilePage() {
     loadProfile();
   }, [user, toast]);
 
+  useEffect(() => {
+    if (!user) {
+      router.push('/auth');
+    }
+  }, [user, router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -80,10 +86,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (!user) {
-    router.push('/auth');
-    return null;
-  }
+  if (!user) return null;
 
   return (
     <Container maxW="container.sm" py={12}>
