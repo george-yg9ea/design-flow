@@ -63,7 +63,7 @@ const moodStatements = {
 export default function MoodGraph({ updates }: MoodGraphProps) {
   const theme = useTheme();
   const primaryColor = theme.colors.blue[500];
-  const [view, setView] = useState<'day' | 'week' | 'month' | 'year' | 'all'>('day');
+  const [view, setView] = useState<'day' | 'week' | 'month' | 'year' | 'all'>('all');
   const [currentDate, setCurrentDate] = useState(new Date());
   const lineColor = primaryColor;
   const gridColor = useColorModeValue('gray.200', 'gray.700');
@@ -429,7 +429,12 @@ export default function MoodGraph({ updates }: MoodGraphProps) {
     >
       <Flex mb={8} align="center" justify="space-between" w="100%">
         {/* Left: Today button */}
-        <Button size="sm" onClick={() => setCurrentDate(new Date())}>
+        <Button size="sm" onClick={() => {
+          if (view === 'all') {
+            setView('day');
+          }
+          setCurrentDate(new Date());
+        }}>
           Today
         </Button>
         {/* Center: Arrows and period label */}
@@ -442,11 +447,11 @@ export default function MoodGraph({ updates }: MoodGraphProps) {
         </HStack>
         {/* Right: Dropdown */}
         <Select value={view} onChange={e => handleViewChange(e.target.value)} w="auto" maxW="180px">
+          <option value="all">All Time</option>
           <option value="day">Day</option>
           <option value="week">Week</option>
           <option value="month">Month</option>
           <option value="year">Year</option>
-          <option value="all">All Time</option>
         </Select>
       </Flex>
       <Box w="100%" h="100%" minH={{ base: '220px', md: '320px', lg: '420px' }}>
